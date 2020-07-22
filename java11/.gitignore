@@ -1,3 +1,9 @@
+.project
+/entrypoint/build
+/entrypoint/.gradle
+/entrypoint/gradle
 /model/.gradle
 /model/build
 /.gradle
+/entrypoint/libs
+/model/libs

@@ -4,5 +4,5 @@
 package com.openfaas.model;
 
 public abstract class AbstractHandler implements IHandler {
-    public abstract Handle(IRequest request);
+    public abstract IResponse Handle(IRequest request);
 }
