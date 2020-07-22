@@ -1,0 +1,34 @@
+plugins {
+  id "com.diffplug.spotless" version "5.1.0"
+}
+
+allprojects {
+  group = 'com.openfaas'
+  version = '0.1.0'
+}
+
+spotless {
+  format 'misc', {
+    // define the files to apply `misc` to
+    target '*.gradle', '*/*.gradle', '*.md', '.gitignore'
+
+    // define the steps to apply to those files
+    trimTrailingWhitespace()
+    indentWithSpaces(2) // or spaces. Takes an integer argument if you don't like 4
+    endWithNewline()
+  }
+  java {
+    // don't need to set target, it is inferred from java
+    target '**/src/*/java/**/*.java'
+
+    importOrder()
+    removeUnusedImports()
+
+    // apply a specific flavor of google-java-format
+    googleJavaFormat('1.8').aosp()
+    // make sure every file has the following copyright header.
+    // optionally, Spotless can set copyright years by digging
+    // through git history (see "license" section below)
+    licenseHeader "// Copyright (c) OpenFaaS Author(s) 2018. All rights reserved.\n// Licensed under the MIT license. See LICENSE file in the project root for full license information.\n"
+  }
+}

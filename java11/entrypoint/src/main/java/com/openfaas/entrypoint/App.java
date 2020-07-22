@@ -1,22 +1,19 @@
 // Copyright (c) OpenFaaS Author(s) 2018. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
 package com.openfaas.entrypoint;
 
+import com.openfaas.model.*;
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
-
 import java.util.HashMap;
 import java.util.Map;
-import com.sun.net.httpserver.Headers;
-
-import com.openfaas.model.*;
 
 public class App {
 
@@ -56,15 +53,15 @@ public class App {
                 }
                 // StandardCharsets.UTF_8.name() > JDK 7
                 requestBody = result.toString("UTF-8");
-	        }
-            
+            }
+
             // System.out.println(requestBody);
             Headers reqHeaders = t.getRequestHeaders();
             Map<String, String> reqHeadersMap = new HashMap<String, String>();
 
             for (Map.Entry<String, java.util.List<String>> header : reqHeaders.entrySet()) {
                 java.util.List<String> headerValues = header.getValue();
-                if(headerValues.size() > 0) {
+                if (headerValues.size() > 0) {
                     reqHeadersMap.put(header.getKey(), headerValues.get(0));
                 }
             }
@@ -73,8 +70,13 @@ public class App {
             //     System.out.println("Req header " + entry.getKey() + " " + entry.getValue());
             // }
 
-            IRequest req = new Request(requestBody, reqHeadersMap,t.getRequestURI().getRawQuery(), t.getRequestURI().getPath());
-            
+            IRequest req =
+                    new Request(
+                            requestBody,
+                            reqHeadersMap,
+                            t.getRequestURI().getRawQuery(),
+                            t.getRequestURI().getPath());
+
             IResponse res = this.handler.Handle(req);
 
             String response = res.getBody();
@@ -82,11 +84,11 @@ public class App {
 
             Headers responseHeaders = t.getResponseHeaders();
             String contentType = res.getContentType();
-            if(contentType.length() > 0) {
+            if (contentType.length() > 0) {
                 responseHeaders.set("Content-Type", contentType);
             }
 
-            for(Map.Entry<String, String> entry : res.getHeaders().entrySet()) {
+            for (Map.Entry<String, String> entry : res.getHeaders().entrySet()) {
                 responseHeaders.set(entry.getKey(), entry.getValue());
             }
 
@@ -96,8 +98,8 @@ public class App {
             os.write(bytesOut);
             os.close();
 
-            System.out.println("Request / " + Integer.toString(bytesOut.length) +" bytes written.");
+            System.out.println(
+                    "Request / " + Integer.toString(bytesOut.length) + " bytes written.");
         }
     }
-
 }

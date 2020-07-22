@@ -1,96 +1,88 @@
-buildscript {
-    group = 'com.openfaas'
-    version = '0.1.1'
-}
-
 plugins {
-    id 'java-library'
-    id 'maven'
-    id 'signing'
+  id 'java-library'
+  id 'maven-publish'
+  id 'signing'
 }
 
-signing {
-    sign configurations.archives
-}
-
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
+description = 'OpenFaaS Model for function invocations.'
 
 dependencies {
-    api 'org.apache.commons:commons-math3:3.6.1'
-    implementation 'com.google.guava:guava:23.0'
-    testImplementation 'junit:junit:4.12'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+test {
+  useJUnitPlatform()
 }
 
 repositories {
-    jcenter()
-
-    flatDir {
-        dirs 'libs'
-    }
+  jcenter()
 }
 
-artifacts {
-    archives javadocJar, sourcesJar
+java {
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
+  withJavadocJar()
+  withSourcesJar()
 }
 
-uploadArchives {
+publishing {
+ publications {
+   mavenJava(MavenPublication) {
+       from components.java
+
+       pom {
+            url = 'http://www.openfaas.com/'
+            description = 'OpenFaaS Model for function invocations.'
+
+             licenses {
+               license {
+                 name = 'MIT'
+                 url = 'https://opensource.org/licenses/MIT'
+               }
+             }
+
+             scm {
+                 connection = 'scm:git:https://github.com/openfaas/templates-sdk.git'
+                 developerConnection = 'scm:git:https://github.com/openfaas/templates-sdk.git'
+                 url = 'https://github.com/openfaas/templates-sdk/'
+             }
+             developers {
+                 developer {
+                   id = 'openfaas'
+                   name = 'OpenFaaS Ltd'
+                   email = 'alex@openfaas.com'
+                 }
+             }
+       }
+   }
+ }
   repositories {
-    flatDir {
-        dirs 'repos'
-    }
+    maven {
+      def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+      def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
 
-    mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+      url = project.hasProperty('release') ? releasesRepoUrl : snapshotsRepoUrl
 
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      pom.project {
-        name 'OpenFaaS model'
-        packaging 'jar'
-        // optionally artifactId can be defined here 
-        description 'OpenFaaS Model for function invocations.'
-        url 'http://www.openfaas.com/'
-
-        scm {
-          connection 'scm:git:https://github.com/openfaas/templates'
-          developerConnection 'scm:git:https://github.com/openfaas/templates'
-          url 'https://github.com/openfaas/templates'
-        }
-
-        licenses {
-          license {
-            name 'MIT'
-            url 'https://opensource.org/licenses/MIT'
-          }
-        }
-
-        developers {
-          developer {
-            id 'openfaas'
-            name 'OpenFaaS Ltd'
-            email 'alex@openfaas.com'
-          }
-        }
+      credentials(PasswordCredentials) {
+        username = project.hasProperty('ossrhUsername') ? ossrhUsername : null;
+        password = project.hasProperty('ossrhPassword')? ossrhPassword : null;
       }
     }
   }
+}
+
+signing {
+    def signingKeyId = findProperty("openfaas.signingKeyId")
+    def signingKey = findProperty("openfaas.signingKey")
+    def signingPassword = findProperty("openfaas.signingPassword")
+    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
 }
