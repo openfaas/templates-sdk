@@ -7,3 +7,6 @@
 /.gradle
 /entrypoint/libs
 /model/libs
+/model/repos
+/entrypoint/repos
+
