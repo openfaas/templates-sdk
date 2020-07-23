@@ -45,7 +45,7 @@ public class AppTest {
 
              Assert.assertEquals(200,responseCode);
              Assert.assertEquals("OK", responseMessage);
-             Assert.assertEquals("Hello, World! From Kamesh", actualGreeting);
+             Assert.assertEquals("Hello, World!", actualGreeting);
 
          }catch(Exception e){
             e.printStackTrace();

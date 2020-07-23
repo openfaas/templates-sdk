@@ -8,7 +8,7 @@ public class SampleAbstractHandler extends AbstractHandler {
     public IResponse Handle(IRequest request) {
         Response resp = new Response();
         resp.setStatusCode(200);
-        resp.setBody("Hello, World! From Kamesh");
+        resp.setBody("Hello, World!");
         return resp;
     }
 }
