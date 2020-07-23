@@ -8,7 +8,7 @@ public class SampleHandler implements IHandler {
     public IResponse Handle(IRequest request) {
         Response resp = new Response();
         resp.setStatusCode(200);
-        resp.setBody("Hello, World!  Kamesh");
+        resp.setBody("Hello, World!");
         return resp;
     }
 }

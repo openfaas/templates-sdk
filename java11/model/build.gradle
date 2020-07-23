@@ -6,12 +6,12 @@ buildscript {
 plugins {
     id 'java-library'
     id 'maven'
-    // id 'signing'
+    id 'signing'
 }
 
-// signing {
-//     sign configurations.archives
-// }
+signing {
+    sign configurations.archives
+}
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
@@ -55,13 +55,13 @@ uploadArchives {
     mavenDeployer {
       beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-      // repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-      //   authentication(userName: ossrhUsername, password: ossrhPassword)
-      // }
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
 
-      // snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-      //   authentication(userName: ossrhUsername, password: ossrhPassword)
-      // }
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
 
       pom.project {
         name 'OpenFaaS model'
