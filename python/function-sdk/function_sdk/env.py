@@ -1,3 +1,11 @@
+"""
+The env modules provides utilities related to the environment variables.
+
+* get_env is a simple wrapper around os.getenv that is provided for
+  symmetry with the secrets module
+"""
+
+
 import os
 from typing import Optional
 

@@ -1,7 +1,12 @@
+"""
+The secrets modules provides utilities related to using secrets in OpenFaaS
+function.
+"""
+
 import functools
 from typing import Optional
 
-_secrets_folder = "/var/openfaas/secrets"
+SECRETS_FOLDER = "/var/openfaas/secrets"
 
 
 @functools.lru_cache(maxsize=None)
@@ -13,8 +18,8 @@ def get_secret(name: str, default: Optional[str] = None) -> Optional[str]:
     """
 
     try:
-        with open(f"{_secrets_folder}/{name}", "r") as f:
-            value = f.read()
+        with open(f"{SECRETS_FOLDER}/{name}", "r") as secret:
+            value = secret.read()
             return value
     except FileNotFoundError:
         return default
