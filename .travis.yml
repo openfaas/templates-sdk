@@ -1,0 +1,38 @@
+language: python
+python:
+- 3.8
+
+cache:
+  pip: true
+  directories:
+    - "$HOME/.cache"
+
+before_install:
+  - cd python/function-sdk
+  - pip install poetry
+
+install:
+  - poetry install
+
+
+jobs:
+  include:
+    - stage: test
+      name: lint
+      script:
+        - poetry run pylint function_sdk tests
+    - name: tests
+      script:
+        - poetry run pytest
+    - stage: publish
+      if: tag IS NOT blank
+      before_deploy:
+        - poetry config http-basic.pypi $PYPI_USERNAME $PYPI_PASSWORD
+        - poetry build
+      deploy:
+        provider: script
+        script: poetry publish
+        skip_cleanup: true
+        on:
+          tags: true
+          repo: openfaas/templates-sdk

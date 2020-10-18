@@ -1,4 +1,30 @@
+# function-sdk for OpenFaas
 
+## Usage
+First install the library
+```sh
+pip install function-sdk
+```
+
+Then in your function code
+
+```py
+# handler.py
+from function_sdk.secrets import get_secret
+
+
+def handle(req):
+    """handle a request to the function
+    Args:
+        req (str): request body
+    """
+    foo_value = get_secret("foo")
+
+    if foo == "":
+        return "secret 'foo' not found"
+
+    return req
+```
 
 ## Development
 
