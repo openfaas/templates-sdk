@@ -20,7 +20,7 @@ jobs:
     - stage: test
       name: lint
       script:
-        - poetry run pylint openfaas tests
+        - poetry run pylint openfaas_sdk tests
     - name: tests
       script:
         - poetry run pytest
