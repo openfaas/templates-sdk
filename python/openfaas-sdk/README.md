@@ -10,7 +10,8 @@ Then in your function code
 
 ```py
 # handler.py
-from openfaas.sdk.secrets import get_secret
+from openfaas_sdk.function.secrets import get_secret
+from openfaas_sdk.function.env import get_env
 
 
 def handle(req):
@@ -18,10 +19,14 @@ def handle(req):
     Args:
         req (str): request body
     """
-    foo_value = get_secret("foo")
+    username = get_env("username")
+    password = get_secret("password")
 
-    if foo == "":
-        return "secret 'foo' not found"
+    if password == "":
+        return "secret 'password' not found"
+
+    if username == "":
+        return "env 'username' not set"
 
     return req
 ```
@@ -67,7 +72,7 @@ make lint test
 
 ### Versioning
 
-The `funciton_sdk` use SemVer. New builds need to increment and commit the new version first.
+The `openfaas_sdk` use SemVer. New builds need to increment and commit the new version first.
 
 To set a sepecific version value, use
 
