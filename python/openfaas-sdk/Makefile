@@ -2,7 +2,7 @@
 
 lint:
 	@echo "+ lint"
-	@poetry run pylint function_sdk tests
+	@poetry run pylint openfaas_sdk tests
 
 fmt:
 	@echo "+ fmt"

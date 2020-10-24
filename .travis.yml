@@ -8,7 +8,7 @@ cache:
     - "$HOME/.cache"
 
 before_install:
-  - cd python/function-sdk
+  - cd python/openfaas-sdk
   - pip install poetry
 
 install:
@@ -20,7 +20,7 @@ jobs:
     - stage: test
       name: lint
       script:
-        - poetry run pylint function_sdk tests
+        - poetry run pylint openfaas tests
     - name: tests
       script:
         - poetry run pytest
@@ -35,4 +35,4 @@ jobs:
         skip_cleanup: true
         on:
           tags: true
-          repo: openfaas/templates-sdk
+          repo: openfaas/openfaas-sdk

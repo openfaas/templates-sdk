@@ -4,8 +4,8 @@ import os
 from distutils import dir_util
 
 import pytest
-from function_sdk import secrets
-from function_sdk.secrets import get_secret
+from openfaas_sdk.function import secrets
+from openfaas_sdk.function.secrets import get_secret
 
 
 @pytest.fixture(name="secrets_dir")

@@ -1,16 +1,16 @@
-# function-sdk for OpenFaas
+# openfaas-sdk for OpenFaas
 
 ## Usage
 First install the library
 ```sh
-pip install function-sdk
+pip install openfaas-sdk
 ```
 
 Then in your function code
 
 ```py
 # handler.py
-from function_sdk.secrets import get_secret
+from openfaas.sdk.secrets import get_secret
 
 
 def handle(req):
@@ -55,7 +55,7 @@ Add `~/.cache/pypoetry/virtualenvs` to `python.venvFolders` setting in VSCode, n
 You can run tests using
 
 ```sh
-$ poetry run pylint function_sdk tests
+$ poetry run pylint openfaas_sdk tests
 $ poetry run pytest
 ```
 

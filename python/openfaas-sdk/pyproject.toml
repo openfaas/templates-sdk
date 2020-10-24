@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "function-sdk"
+name = "openfaas-sdk"
 version = "0.1.0"
 license = "MIT"
 description = "OpenFaaS function SDK contains standard portable utilities to make writing functions easier."

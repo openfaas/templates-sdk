@@ -4,3 +4,4 @@ __pycache__
 .vscode
 function_sdk.egg-info
 dist
+openfaas_sdk.egg-info
