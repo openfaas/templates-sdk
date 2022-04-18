@@ -20,12 +20,19 @@ import com.openfaas.model.*;
 
 public class App {
 
+    public App() throws  Exception {
+        createServer();
+    }
+
     public static void main(String[] args) throws Exception {
+        createServer();
+    }
+
+    private static void createServer() throws Exception {
         int port = 8082;
 
         HandlerProvider p = HandlerProvider.getInstance();
         IHandler handler = p.getHandler();
-
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         InvokeHandler invokeHandler = new InvokeHandler(handler);
 

@@ -3,7 +3,7 @@
 
 package com.openfaas.model;
 
-public class SampleHandler implements IHandler {
+public class SampleAbstractHandler extends AbstractHandler {
     @Override
     public IResponse Handle(IRequest request) {
         Response resp = new Response();
