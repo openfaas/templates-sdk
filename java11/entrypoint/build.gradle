@@ -1,99 +1,98 @@
-buildscript {
-    group = 'com.openfaas'
-    version = '0.1.0'
-}
-
 plugins {
-    id 'java'
-    id 'application'
-    id 'maven'
-    id 'signing'
+  id 'java-library'
+  id 'maven-publish'
+  id 'signing'
 }
 
-signing {
-    sign configurations.archives
-}
-
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-mainClassName = 'App'
+description = 'OpenFaaS Function entry point'
+version = '0.1.0'
 
 dependencies {
-    compile 'com.google.guava:guava:23.0'
-    testCompile 'junit:junit:4.12'
-    compile 'com.openfaas:model:0.1.1'
+  api project(':model')
+
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+test {
+  useJUnitPlatform()
+}
+
+jar {
+  manifest {
+    attributes 'Implementation-Title': 'OpenFaaS Function',
+        'Implementation-Version': project.version
+  }
 }
 
 repositories {
-    jcenter()
-
-    flatDir {
-        dirs 'libs'
-    }
+  jcenter()
 }
 
-artifacts {
-    archives javadocJar, sourcesJar
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+  withJavadocJar()
+  withSourcesJar()
 }
 
-uploadArchives {
-  repositories {
-    flatDir {
-        dirs 'repos'
-    }
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
 
-    mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      pom.project {
-        name 'OpenFaaS model'
-        packaging 'jar'
-        // optionally artifactId can be defined here 
-        description 'OpenFaaS Model for function invocations.'
-        url 'http://www.openfaas.com/'
-
-        scm {
-          connection 'scm:git:https://github.com/openfaas/templates'
-          developerConnection 'scm:git:https://github.com/openfaas/templates'
-          url 'https://github.com/openfaas/templates'
-        }
+      pom {
+        url = 'http://www.openfaas.com/'
+        description = 'OpenFaaS Function.'
 
         licenses {
           license {
-            name 'MIT'
-            url 'https://opensource.org/licenses/MIT'
+            name = 'MIT'
+            url = 'https://opensource.org/licenses/MIT'
           }
         }
 
+        scm {
+          connection = 'scm:git:https://github.com/openfaas/templates-sdk.git'
+          developerConnection = 'scm:git:https://github.com/openfaas/templates-sdk.git'
+          url = 'https://github.com/openfaas/templates-sdk/'
+        }
         developers {
           developer {
-            id 'openfaas'
-            name 'OpenFaaS Ltd'
-            email 'alex@openfaas.com'
+            id = 'openfaas'
+            name = 'OpenFaaS Ltd'
+            email = 'alex@openfaas.com'
           }
         }
       }
     }
+  }
+  repositories {
+    maven {
+      def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+      def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+
+      url = project.hasProperty('release') ? releasesRepoUrl : snapshotsRepoUrl
+
+      credentials(PasswordCredentials) {
+        username = project.hasProperty('ossrhUsername') ? ossrhUsername : null;
+        password = project.hasProperty('ossrhPassword')? ossrhPassword : null;
+      }
+    }
+  }
+}
+
+signing {
+  def signingKeyId = findProperty("openfaas.signingKeyId")
+  def signingKey = findProperty("openfaas.signingKey")
+  def signingPassword = findProperty("openfaas.signingPassword")
+  useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+
+  sign publishing.publications.mavenJava
+}
+
+javadoc {
+  if(JavaVersion.current().isJava9Compatible()) {
+    options.addBooleanOption('html5', true)
   }
 }

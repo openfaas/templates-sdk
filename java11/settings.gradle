@@ -1,0 +1,4 @@
+rootProject.name = 'openfaas-java'
+
+include 'model'
+include 'entrypoint'

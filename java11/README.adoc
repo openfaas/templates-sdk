@@ -1,0 +1,52 @@
+= OpenFaas Java
+
+This project builds Java libraries and modules used by OpenFaas.
+
+This project uses https://gradle.org/[Gradle] build tool.
+
+This project publishes java libraries to https://search.maven.org/[Maven Central].
+
+The libraries are used by the https://github.com/openfaas/templates[OpenFaas Java templates].
+
+You will use these libraries as dependencies when building your functions.
+
+== Contributions to this project
+
+The project uses https://github.com/diffplug/spotless/tree/main/plugin-gradle#java[gradle-spotless-plugin] to take care of checking and formatting the source code.
+This ensures that contributions are always formatted in the same way.
+It also ensures files contain the proper license header.
+
+This is a https://docs.gradle.org/current/userguide/multi_project_builds.html[Multi-Project Gradle build] .
+It means we have multiple libraries published from this project.
+
+We use https://docs.gradle.org/current/userguide/publishing_maven.html[maven-publish] plugin to publish the libraries.
+
+== Making a release
+
+Releases are published to Maven Central.
+See https://issues.sonatype.org/browse/OSSRH-48617 and https://central.sonatype.org/pages/ossrh-guide.html .
+
+All of the release and publish steps are done by gradle.
+You will have to have write access to the staging repository and aprove the release.
+
+You will have to pass the release property: `./gradlew clean build -Prelease` .
+That will enable the tasks in the build responsible for publishing.
+
+You will also have to provide valid credentials via `ossrhUsername` and `ossrhPassword` .
+
+Publishing requires signing the artifacts and you will need to configure a https://docs.gradle.org/current/userguide/signing_plugin.html#sec:signatory_credentials[signatory]
+You can avoid the signing process by excluding the task `./gradlew build -x sign` .
+
+To configure a signatory you will need to add some properties to your `~/.gradle/gradle.properties` file .
+
+You will need to provide values for the properties defined in the `build.gradle` file:
+
+[source,groovy]
+----
+signing {
+    def signingKeyId = findProperty("openfaas.signingKeyId")
+    def signingKey = findProperty("openfaas.signingKey")
+    def signingPassword = findProperty("openfaas.signingPassword")
+    // ...
+}
+----
